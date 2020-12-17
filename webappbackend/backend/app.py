@@ -42,13 +42,7 @@ def get_all_user():
     return jsonify(result), 200
     
 #Show some row by ID
-@app.route('/user/get/<int:user_id>')
-def get_user_by_id(user_id):
-    c = do.Customer(CCustomerID = user_id)
-    result = do.Customer(ConnectionData).get_by_id(c)
-    if result[1] != 200:
-        return jsonify({'Message' : result[0]}) ,result[1]
-    return jsonify(result.to_json()) ,200
+
 
 @app.route('/user/get_by_id', methods=['POST'])
 def user_get_by_id():
