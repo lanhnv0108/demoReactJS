@@ -22,15 +22,8 @@ class Customer:
             'ContactName': self.ContactName,
             'Address': self.Address,
             'City': self.City,
-            'PostalCode': self.PostalCode ,
+            'PostalCode': self.PostalCode,
             'Country': self.Country
         }
-class Categories:
-class Employees:
-class OrderDetails:
-class Orders:
-class Products:
-class Shippers:
-class Suppliers:
 if __name__ == "__main__":
     print('this is business object package')
