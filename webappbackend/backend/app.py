@@ -44,7 +44,7 @@ def get_all_user():
 @app.route('/user/delete/<int:customer_id>' , methods=['PUT'])
 def delete_user_by_id(customer_id):
     c = bo.Customer(CustomerID = customer_id)
-    result = do.Customer(ConnectionData).delete()
+    result = do.Customer(ConnectionData).delete(c)
     return jsonify({'message': result[0]}),result[1]
 
     
