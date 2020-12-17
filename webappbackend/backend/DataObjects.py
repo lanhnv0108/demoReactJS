@@ -22,6 +22,26 @@ class Customer:
         finally:
             if con is not None:
                 con.close()
+    def get_all(self):
+        con = None
+        try:
+            con = psycopg2.connect(user=self.ConnectionData['user'],
+                                  password=self.ConnectionData['password'],
+                                  host=self.ConnectionData['host'],
+                                  port=self.ConnectionData['port'],
+                                  database=self.ConnectionData['database'])
+            cur = con.cursor()
+            sql = "SELECT * FROM TblCustomers"
+            cur.execute(sql)
+            con.commit()
+            con.close()
+            return 'Insert TblCustomers successfully'
+        except (Exception, psycopg2.DatabaseError) as error:
+            return str(error)
+        finally:
+            if con is not None:
+                con.close()
+
 
 if __name__ == "__main__":
     print('this is data object package')
