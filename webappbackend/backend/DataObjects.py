@@ -57,8 +57,8 @@ class Customer:
                                   port=self.ConnectionData['port'],
                                   database=self.ConnectionData['database'])
             cur = con.cursor()
-            sql = "SELECT * FROM TblCustomers WHERE customerid = %s"
-            cur.execute(sql , (customer.CustomerID,))
+            sql = "SELECT * FROM TblCustomers WHERE CustomerID = %s"
+            cur.execute(sql, (customer.CustomerID, ))
             con.commit() 
             row = cur.fetchone()
             if row:

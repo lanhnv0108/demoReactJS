@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request
 import os
-import BusinessObjects as do
+import BusinessObjects as bo
 import DataObjects as do
 
 app = Flask(__name__)
@@ -43,7 +43,7 @@ def get_all_user():
 
 @app.route('/user/delete/<int:customer_id>' , methods=['PUT'])
 def delete_user_by_id(customer_id):
-    c = do.Customer(CustomerID = customer_id)
+    c = bo.Customer(CustomerID = customer_id)
     result = do.Customer(ConnectionData).delete()
     return jsonify({'message': result[0]}),result[1]
 
@@ -51,7 +51,7 @@ def delete_user_by_id(customer_id):
 #Show some row by ID
 @app.route('/user/get/<int:user_id>')
 def get_user_by_id(user_id):
-    c = do.Customer(CustomerID = user_id)
+    c = bo.Customer(CustomerID = user_id)
     result = do.Customer(ConnectionData).get_by_id(c)
     if result[1] != 200:
         return jsonify({'message': result[0]}) , result[0]
