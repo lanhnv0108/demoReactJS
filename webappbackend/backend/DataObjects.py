@@ -1,5 +1,6 @@
 import psycopg2
 from BusinessObjects import Customer as CustomerEntity
+
 class Customer:
     def __init__(self, ConnectionData):
         self.ConnectionData = ConnectionData
@@ -82,7 +83,7 @@ class Customer:
                                   port=self.ConnectionData['port'],
                                   database=self.ConnectionData['database'])
             cur = con.cursor()
-            sql = "DELETE * FROM TblCustomers WHERE CustomerID = %s"
+            sql = "DELETE FROM TblCustomers WHERE CustomerID = %s"
             cur.execute(sql, (customer.CustomerID,))
             con.commit()
             row = cur.rowcount
@@ -95,6 +96,30 @@ class Customer:
         finally:
             if con is not None:
                 con.close()
+
+    def update(self , customer : CustomerEntity):
+        con = None
+        try:
+            con = psycopg2.connect(user=self.ConnectionData['user'],
+                                  password=self.ConnectionData['password'],
+                                  host=self.ConnectionData['host'],
+                                  port=self.ConnectionData['port'],
+                                  database=self.ConnectionData['database'])
+            cur = con.cursor()
+            sql = "UPDATE TblCustomers CustomerName = %s, ContactName = %s, Address = %s, City = %s, PostalCode = %s, Country = %s) WHERE CustomerID = %s"
+            cur.execute(sql, (customer.CustomerID, customer.CustomerName, customer.ContactName, customer.Address, customer.City,customer.PostalCode, customer.Country))
+            con.commit()
+            row = cur.rowcount
+            if row > 0:
+                return 'Updated customer' , 200
+            con.close()
+            return 'Customer ID not found' ,200
+        except (Exception, psycopg2.DatabaseError) as error:
+            return str(error)
+        finally:
+            if con is not None:
+                con.close()
+# -------------------------------------------------------
 
 
 if __name__ == "__main__":
