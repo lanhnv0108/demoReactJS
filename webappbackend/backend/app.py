@@ -59,9 +59,9 @@ def delete_user_by_id(customer_id):
 #  Update customer
 
 @app.route('/customer/update/<int:customer_id>' , methods=['PUT'])
-def update_by_id(customer_id):
+def update_coustomer(customer_id):
     data = request.json
-    c = bo.Customer(CustomerID = data['customer_id'], CustomerName=data['CustomerName'], ContactName=data['ContactName'], Address=data['Address'], City = data['City'],  PostalCode=data['PostalCode'], Country=data['Contry'])
+    c = bo.Customer(CustomerID =  customer_id , CustomerName=data['CustomerName'], ContactName=data['ContactName'], Address=data['Address'], City = data['City'],  PostalCode=data['PostalCode'], Country=data['Country'])
     result = do.Customer(ConnectionData).update(c)
     return jsonify({'message': result[0]}),result[1]
     
@@ -85,4 +85,6 @@ def user_get_by_id():
 
 
 if __name__ == "__main__":
+    app.debug = True
     app.run(host='0.0.0.0', port=8080)
+    
