@@ -26,7 +26,14 @@ def test_insert():
     c1 = bo.Customer(1, 'Lanh', 'Nguyen', '566 Nui Thanh', 'Danang', '50000', 'Vietnam')
     s1 = c2.insert(c1)
     return s1
-
+    
+@app.route('/ca_insert')
+def test_insertca():
+    #ConnectionString = 'database=northwind user=postgres password=postgres host=10.0.2.15 port=5432'
+    c2 = do.Categories(ConnectionData)
+    c1 = bo.Categories(1 , 'hello' , 'dadadad')
+    s1 = c2.insert(c1)
+    return s1
 @app.route('/user/insert', methods=['POST'])
 def user_insert():
     data = request.json
@@ -50,6 +57,11 @@ def test_send_receive():
 def get_all_user():
     result = do.Customer(ConnectionData).get_all()
     return jsonify(result), 200
+# --------------------
+@app.route('/categories/all_Categories')
+def get_all_ca():
+    result = do.Categories(ConnectionData).get_all()
+    return jsonify(result), 200
 # Delete customer
 @app.route('/customer/delete/<int:customer_id>' , methods=['DELETE'])
 def delete_user_by_id(customer_id):
@@ -66,8 +78,17 @@ def update_coustomer(customer_id):
     return jsonify({'message': result[0]}),result[1]
     
 #Show some row by ID
+# CUSTOMER
 @app.route('/customer/get/<int:user_id>')
 def get_user_by_id(user_id):
+    c = bo.Customer(CustomerID = user_id)
+    result = do.Customer(ConnectionData).get_by_id(c)
+    if result[1] != 200:
+        return jsonify({'message': result[0]}) , result[0]
+    return jsonify(result[0].to_json()) , 200
+# Categories
+@app.route('/categories/get/<int:user_id>')
+def get_ca_by_id(user_id):
     c = bo.Customer(CustomerID = user_id)
     result = do.Customer(ConnectionData).get_by_id(c)
     if result[1] != 200:
