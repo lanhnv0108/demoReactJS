@@ -729,10 +729,10 @@ class Products:
             if con is not None:
                 con.close() 
 # -------------------------------------------------------------------
-class Products:
+class Shippers:
     def __init__(self, ConnectionData):
         self.ConnectionData = ConnectionData
-    def insert(self, products : ProductsEntity):
+    def insert(self, shippers : ShippersEntity:
         con = None
         try:
             con = psycopg2.connect(user=self.ConnectionData['user'],
@@ -741,7 +741,7 @@ class Products:
                                   port=self.ConnectionData['port'],
                                   database=self.ConnectionData['database'])
             cur = con.cursor()
-            sql = "INSERT INTO Products(ProductName, SupplierID , CategoryID, Unit ,Price ) VALUES (%s, %s, %s, %s, %s)"
+            sql = "INSERT INTO Shippers(ProductName, SupplierID , CategoryID, Unit ,Price ) VALUES (%s, %s, %s, %s, %s)"
             record_to_insert = (products.ProductName , products.SupplierID , products.CategoryID , products.Unit, products.Price)
             cur.execute(sql, record_to_insert)
             con.commit()
