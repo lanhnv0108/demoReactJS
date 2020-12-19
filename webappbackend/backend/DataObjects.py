@@ -490,5 +490,362 @@ class OrderDetails:
         finally:
             if con is not None:
                 con.close()  
+# ---------------------------------------------------
+class Orders:
+    def __init__(self, ConnectionData):
+        self.ConnectionData = ConnectionData
+    def insert(self, oders : OrdersEntity):
+        con = None
+        try:
+            con = psycopg2.connect(user=self.ConnectionData['user'],
+                                  password=self.ConnectionData['password'],
+                                  host=self.ConnectionData['host'],
+                                  port=self.ConnectionData['port'],
+                                  database=self.ConnectionData['database'])
+            cur = con.cursor()
+            sql = "INSERT INTO Orders(CustomerID, EmployeeID, OrderDate, ShipperID) VALUES (%s, %s, %s, %s)"
+            record_to_insert = (oders.CustomerID ,oders.EmployeeID , oders.OrderDate, oders.ShipperID)
+            cur.execute(sql, record_to_insert)
+            con.commit()
+            con.close()
+            return 'Insert Orders successfully'
+        except (Exception, psycopg2.DatabaseError) as error:
+            return str(error)
+        finally:
+            if con is not None:
+                con.close()
+    def get_all(self):
+        con = None
+        try:
+            con = psycopg2.connect(user=self.ConnectionData['user'],
+                                  password=self.ConnectionData['password'],
+                                  host=self.ConnectionData['host'],
+                                  port=self.ConnectionData['port'],
+                                  database=self.ConnectionData['database'])
+            cur = con.cursor()
+            sql = "SELECT * FROM Orders "
+            cur.execute(sql)
+            con.commit()
+            rows = cur.fetchall()
+            result = []
+            for row in rows:
+                c = OrdersEntity()
+                c.fetch_data(row)
+                result.append(c.to_json())
+                con.close()
+            return result
+        except (Exception, psycopg2.DatabaseError) as error:
+            return str(error)
+        finally:
+            if con is not None:
+                con.close()    
+    def get_by_id(self , oders : OrdersEntity):
+        con = None
+        try:
+            con = psycopg2.connect(user=self.ConnectionData['user'],
+                                  password=self.ConnectionData['password'],
+                                  host=self.ConnectionData['host'],
+                                  port=self.ConnectionData['port'],
+                                  database=self.ConnectionData['database'])
+            cur = con.cursor()
+            sql = "SELECT * FROM Orders WHERE OrderID = %s"
+            cur.execute(sql, (oders.OrderID, ))
+            con.commit() 
+            row = cur.fetchone()
+            if row:
+                c = OrdersEntity()
+                c.fetch_data(row)
+                return c , 200
+            con.close()
+            return 'OrderDetails' , 404
+            
+        except (Exception, psycopg2.DatabaseError) as error:
+            return str(error)
+        finally:
+            if con is not None:
+                con.close()   
+    def delete(self ,  oders : OrdersEntity):
+        con = None
+        try:
+            con = psycopg2.connect(user=self.ConnectionData['user'],
+                                  password=self.ConnectionData['password'],
+                                  host=self.ConnectionData['host'],
+                                  port=self.ConnectionData['port'],
+                                  database=self.ConnectionData['database'])
+            cur = con.cursor()
+            sql = "DELETE FROM Orders WHERE OrderID= %s"
+            cur.execute(sql, (oders.OrderID,))
+            con.commit()
+            row = cur.rowcount
+            if row > 0:
+                return 'Deleted Orders' , 200
+            con.close()
+            return 'Orders ID not found' ,200
+        except (Exception, psycopg2.DatabaseError) as error:
+            return str(error)
+        finally:
+            if con is not None:
+                con.close()
+
+    def update(self , oders : OrdersEntity):
+        con = None
+        try:
+            con = psycopg2.connect(user=self.ConnectionData['user'],
+                                  password=self.ConnectionData['password'],
+                                  host=self.ConnectionData['host'],
+                                  port=self.ConnectionData['port'],
+                                  database=self.ConnectionData['database'])
+            cur = con.cursor()
+            sql = "UPDATE Orders SET CustomerID = %s, EmployeeID = %s, OrderDate  = %s , ShipperID = %s  WHERE OrderID= %s"
+            cur.execute(sql, (oders.CustomerID , oders.EmployeeID , oders.OrderDate , oders.ShipperID , oders.OrderID))
+            con.commit()
+            row = cur.rowcount
+            if row > 0:
+                return 'Updated Orders ' , 200
+            con.close()
+            return 'OrdersID not found' ,200
+        except (Exception, psycopg2.DatabaseError) as error:
+            return str(error)
+        finally:
+            if con is not None:
+                con.close() 
+# --------------------------------------------------------------------
+class Products:
+    def __init__(self, ConnectionData):
+        self.ConnectionData = ConnectionData
+    def insert(self, products : ProductsEntity):
+        con = None
+        try:
+            con = psycopg2.connect(user=self.ConnectionData['user'],
+                                  password=self.ConnectionData['password'],
+                                  host=self.ConnectionData['host'],
+                                  port=self.ConnectionData['port'],
+                                  database=self.ConnectionData['database'])
+            cur = con.cursor()
+            sql = "INSERT INTO Products(ProductName, SupplierID , CategoryID, Unit ,Price ) VALUES (%s, %s, %s, %s, %s)"
+            record_to_insert = (products.ProductName , products.SupplierID , products.CategoryID , products.Unit, products.Price)
+            cur.execute(sql, record_to_insert)
+            con.commit()
+            con.close()
+            return 'Insert Products successfully'
+        except (Exception, psycopg2.DatabaseError) as error:
+            return str(error)
+        finally:
+            if con is not None:
+                con.close()
+    def get_all(self):
+        con = None
+        try:
+            con = psycopg2.connect(user=self.ConnectionData['user'],
+                                  password=self.ConnectionData['password'],
+                                  host=self.ConnectionData['host'],
+                                  port=self.ConnectionData['port'],
+                                  database=self.ConnectionData['database'])
+            cur = con.cursor()
+            sql = "SELECT * FROM Products "
+            cur.execute(sql)
+            con.commit()
+            rows = cur.fetchall()
+            result = []
+            for row in rows:
+                c = ProductsEntity()
+                c.fetch_data(row)
+                result.append(c.to_json())
+                con.close()
+            return result
+        except (Exception, psycopg2.DatabaseError) as error:
+            return str(error)
+        finally:
+            if con is not None:
+                con.close()    
+    def get_by_id(self , products : ProductsEntity):
+        con = None
+        try:
+            con = psycopg2.connect(user=self.ConnectionData['user'],
+                                  password=self.ConnectionData['password'],
+                                  host=self.ConnectionData['host'],
+                                  port=self.ConnectionData['port'],
+                                  database=self.ConnectionData['database'])
+            cur = con.cursor()
+            sql = "SELECT * FROM Products WHERE ProductID = %s"
+            cur.execute(sql, (products.ProductID, ))
+            con.commit() 
+            row = cur.fetchone()
+            if row:
+                c = ProductsEntity()
+                c.fetch_data(row)
+                return c , 200
+            con.close()
+            return 'OrderDetails' , 404
+            
+        except (Exception, psycopg2.DatabaseError) as error:
+            return str(error)
+        finally:
+            if con is not None:
+                con.close()   
+    def delete(self , products : ProductsEntity):
+        con = None
+        try:
+            con = psycopg2.connect(user=self.ConnectionData['user'],
+                                  password=self.ConnectionData['password'],
+                                  host=self.ConnectionData['host'],
+                                  port=self.ConnectionData['port'],
+                                  database=self.ConnectionData['database'])
+            cur = con.cursor()
+            sql = "DELETE FROM Products WHERE ProductID= %s"
+            cur.execute(sql, (products.ProductID,))
+            con.commit()
+            row = cur.rowcount
+            if row > 0:
+                return 'Deleted ProductID' , 200
+            con.close()
+            return 'ProductID ID not found' ,200
+        except (Exception, psycopg2.DatabaseError) as error:
+            return str(error)
+        finally:
+            if con is not None:
+                con.close()
+
+    def update(self , products : ProductsEntity):
+        con = None
+        try:
+            con = psycopg2.connect(user=self.ConnectionData['user'],
+                                  password=self.ConnectionData['password'],
+                                  host=self.ConnectionData['host'],
+                                  port=self.ConnectionData['port'],
+                                  database=self.ConnectionData['database'])
+            cur = con.cursor()
+            sql = "UPDATE Products SET ProductName = %s, SupplierID = %s, CategoryID  = %s , Unit = %s, Price =%s  WHERE ProductID= %s"
+            cur.execute(sql, (products.ProductName , products.SupplierID , products.CategoryID , products.Unit , products.Price , products.ProductID))
+            con.commit()
+            row = cur.rowcount
+            if row > 0:
+                return 'Updated Products ' , 200
+            con.close()
+            return 'Products not found' ,200
+        except (Exception, psycopg2.DatabaseError) as error:
+            return str(error)
+        finally:
+            if con is not None:
+                con.close() 
+# -------------------------------------------------------------------
+class Products:
+    def __init__(self, ConnectionData):
+        self.ConnectionData = ConnectionData
+    def insert(self, products : ProductsEntity):
+        con = None
+        try:
+            con = psycopg2.connect(user=self.ConnectionData['user'],
+                                  password=self.ConnectionData['password'],
+                                  host=self.ConnectionData['host'],
+                                  port=self.ConnectionData['port'],
+                                  database=self.ConnectionData['database'])
+            cur = con.cursor()
+            sql = "INSERT INTO Products(ProductName, SupplierID , CategoryID, Unit ,Price ) VALUES (%s, %s, %s, %s, %s)"
+            record_to_insert = (products.ProductName , products.SupplierID , products.CategoryID , products.Unit, products.Price)
+            cur.execute(sql, record_to_insert)
+            con.commit()
+            con.close()
+            return 'Insert Products successfully'
+        except (Exception, psycopg2.DatabaseError) as error:
+            return str(error)
+        finally:
+            if con is not None:
+                con.close()
+    def get_all(self):
+        con = None
+        try:
+            con = psycopg2.connect(user=self.ConnectionData['user'],
+                                  password=self.ConnectionData['password'],
+                                  host=self.ConnectionData['host'],
+                                  port=self.ConnectionData['port'],
+                                  database=self.ConnectionData['database'])
+            cur = con.cursor()
+            sql = "SELECT * FROM Products "
+            cur.execute(sql)
+            con.commit()
+            rows = cur.fetchall()
+            result = []
+            for row in rows:
+                c = ProductsEntity()
+                c.fetch_data(row)
+                result.append(c.to_json())
+                con.close()
+            return result
+        except (Exception, psycopg2.DatabaseError) as error:
+            return str(error)
+        finally:
+            if con is not None:
+                con.close()    
+    def get_by_id(self , products : ProductsEntity):
+        con = None
+        try:
+            con = psycopg2.connect(user=self.ConnectionData['user'],
+                                  password=self.ConnectionData['password'],
+                                  host=self.ConnectionData['host'],
+                                  port=self.ConnectionData['port'],
+                                  database=self.ConnectionData['database'])
+            cur = con.cursor()
+            sql = "SELECT * FROM Products WHERE ProductID = %s"
+            cur.execute(sql, (products.ProductID, ))
+            con.commit() 
+            row = cur.fetchone()
+            if row:
+                c = ProductsEntity()
+                c.fetch_data(row)
+                return c , 200
+            con.close()
+            return 'OrderDetails' , 404
+            
+        except (Exception, psycopg2.DatabaseError) as error:
+            return str(error)
+        finally:
+            if con is not None:
+                con.close()   
+    def delete(self , products : ProductsEntity):
+        con = None
+        try:
+            con = psycopg2.connect(user=self.ConnectionData['user'],
+                                  password=self.ConnectionData['password'],
+                                  host=self.ConnectionData['host'],
+                                  port=self.ConnectionData['port'],
+                                  database=self.ConnectionData['database'])
+            cur = con.cursor()
+            sql = "DELETE FROM Products WHERE ProductID= %s"
+            cur.execute(sql, (products.ProductID,))
+            con.commit()
+            row = cur.rowcount
+            if row > 0:
+                return 'Deleted ProductID' , 200
+            con.close()
+            return 'ProductID ID not found' ,200
+        except (Exception, psycopg2.DatabaseError) as error:
+            return str(error)
+        finally:
+            if con is not None:
+                con.close()
+
+    def update(self , products : ProductsEntity):
+        con = None
+        try:
+            con = psycopg2.connect(user=self.ConnectionData['user'],
+                                  password=self.ConnectionData['password'],
+                                  host=self.ConnectionData['host'],
+                                  port=self.ConnectionData['port'],
+                                  database=self.ConnectionData['database'])
+            cur = con.cursor()
+            sql = "UPDATE Products SET ProductName = %s, SupplierID = %s, CategoryID  = %s , Unit = %s, Price =%s  WHERE ProductID= %s"
+            cur.execute(sql, (products.ProductName , products.SupplierID , products.CategoryID , products.Unit , products.Price , products.ProductID))
+            con.commit()
+            row = cur.rowcount
+            if row > 0:
+                return 'Updated Products ' , 200
+            con.close()
+            return 'Products not found' ,200
+        except (Exception, psycopg2.DatabaseError) as error:
+            return str(error)
+        finally:
+            if con is not None:
+                con.close() 
 if __name__ == "__main__":
     print('this is data object package')
