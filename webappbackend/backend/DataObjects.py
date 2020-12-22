@@ -732,7 +732,7 @@ class Products:
 class Shippers:
     def __init__(self, ConnectionData):
         self.ConnectionData = ConnectionData
-    def insert(self, shippers : ShippersEntity:
+    def insert(self, shippers : ShippersEntity):
         con = None
         try:
             con = psycopg2.connect(user=self.ConnectionData['user'],
@@ -741,12 +741,12 @@ class Shippers:
                                   port=self.ConnectionData['port'],
                                   database=self.ConnectionData['database'])
             cur = con.cursor()
-            sql = "INSERT INTO Shippers(ProductName, SupplierID , CategoryID, Unit ,Price ) VALUES (%s, %s, %s, %s, %s)"
-            record_to_insert = (products.ProductName , products.SupplierID , products.CategoryID , products.Unit, products.Price)
+            sql = "INSERT INTO Shippers(ShipperName, Phone ) VALUES (%s, %s)"
+            record_to_insert = (shippers.ShipperName , shippers.Phone)
             cur.execute(sql, record_to_insert)
             con.commit()
             con.close()
-            return 'Insert Products successfully'
+            return 'Insert Shippers successfully'
         except (Exception, psycopg2.DatabaseError) as error:
             return str(error)
         finally:
@@ -761,13 +761,13 @@ class Shippers:
                                   port=self.ConnectionData['port'],
                                   database=self.ConnectionData['database'])
             cur = con.cursor()
-            sql = "SELECT * FROM Products "
+            sql = "SELECT * FROM Shippers"
             cur.execute(sql)
             con.commit()
             rows = cur.fetchall()
             result = []
             for row in rows:
-                c = ProductsEntity()
+                c = ShippersEntity()
                 c.fetch_data(row)
                 result.append(c.to_json())
                 con.close()
@@ -777,7 +777,7 @@ class Shippers:
         finally:
             if con is not None:
                 con.close()    
-    def get_by_id(self , products : ProductsEntity):
+    def get_by_id(self , shippers : ShippersEntity):
         con = None
         try:
             con = psycopg2.connect(user=self.ConnectionData['user'],
@@ -786,23 +786,23 @@ class Shippers:
                                   port=self.ConnectionData['port'],
                                   database=self.ConnectionData['database'])
             cur = con.cursor()
-            sql = "SELECT * FROM Products WHERE ProductID = %s"
-            cur.execute(sql, (products.ProductID, ))
+            sql = "SELECT * FROM Shippers WHERE ShipperID = %s"
+            cur.execute(sql, (shippers.ShipperID, ))
             con.commit() 
             row = cur.fetchone()
             if row:
-                c = ProductsEntity()
+                c = ShippersEntity()
                 c.fetch_data(row)
                 return c , 200
             con.close()
-            return 'OrderDetails' , 404
+            return 'Shipper' , 404
             
         except (Exception, psycopg2.DatabaseError) as error:
             return str(error)
         finally:
             if con is not None:
                 con.close()   
-    def delete(self , products : ProductsEntity):
+    def delete(self , shippers : ShippersEntity):
         con = None
         try:
             con = psycopg2.connect(user=self.ConnectionData['user'],
@@ -811,21 +811,21 @@ class Shippers:
                                   port=self.ConnectionData['port'],
                                   database=self.ConnectionData['database'])
             cur = con.cursor()
-            sql = "DELETE FROM Products WHERE ProductID= %s"
-            cur.execute(sql, (products.ProductID,))
+            sql = "DELETE FROM Shippers WHERE ShipperID= %s"
+            cur.execute(sql, (shippers.ShipperID ,))
             con.commit()
             row = cur.rowcount
             if row > 0:
-                return 'Deleted ProductID' , 200
+                return 'Deleted ShipperID' , 200
             con.close()
-            return 'ProductID ID not found' ,200
+            return 'ShipperID not found' ,200
         except (Exception, psycopg2.DatabaseError) as error:
             return str(error)
         finally:
             if con is not None:
                 con.close()
 
-    def update(self , products : ProductsEntity):
+    def update(self , shippers : ShippersEntity):
         con = None
         try:
             con = psycopg2.connect(user=self.ConnectionData['user'],
@@ -834,14 +834,14 @@ class Shippers:
                                   port=self.ConnectionData['port'],
                                   database=self.ConnectionData['database'])
             cur = con.cursor()
-            sql = "UPDATE Products SET ProductName = %s, SupplierID = %s, CategoryID  = %s , Unit = %s, Price =%s  WHERE ProductID= %s"
-            cur.execute(sql, (products.ProductName , products.SupplierID , products.CategoryID , products.Unit , products.Price , products.ProductID))
+            sql = "UPDATE Shippers SET ShipperName = %s, Phone = %s WHERE ShipperID= %s"
+            cur.execute(sql, ( shippers.ShipperName , shippers.Phone , shippers.ShipperID))
             con.commit()
             row = cur.rowcount
             if row > 0:
-                return 'Updated Products ' , 200
+                return 'Shippers Products ' , 200
             con.close()
-            return 'Products not found' ,200
+            return 'Shippers not found' ,200
         except (Exception, psycopg2.DatabaseError) as error:
             return str(error)
         finally:

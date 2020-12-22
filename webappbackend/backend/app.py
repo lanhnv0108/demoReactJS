@@ -109,7 +109,77 @@ def user_get_by_id():
     result['user_id'] = 1
     return jsonify(result), 200
 
+# Shipper API
+@app.route('/shipper/insert', methods=['POST'])
+def insert_shipper():
+    data = request.json
+    shipper = bo.Shippers(shipper_name=data['shipper_name'], phone=data['phone'])
+    result = do.Shippers(ConnectionData).insert(shipper)
+    return jsonify({'message': result}), 200
 
+@app.route('/shipper/all')
+def get_all_shipper():
+    c = do.Shippers(ConnectionData).get_all()
+    return jsonify(c), 200
+
+@app.route('/shipper/get/<int:shipper_id>')
+def get_shipper_by_id(shipper_id):
+    shipper = bo.Shippers(shipper_id=shipper_id)
+    result = do.Shippers(ConnectionData).get_by_id(shipper)
+    if result[1] != 200:
+        return jsonify({'message': result[0]}), result[1]
+    return jsonify(result[0].to_json()), 200
+
+@app.route('/shipper/update/<int:shipper_id>', methods=['PUT'])
+def update_shipper_by_id(shipper_id):
+    data = request.json
+    shipper = bo.Shippers(shipper_id=shipper_id, shipper_name=data['shipper_name'], phone=data['phone'])
+    result = do.Shippers(ConnectionData).update(shipper)
+    return jsonify({'message': result[0]}), result[1]
+
+@app.route('/shipper/delete/<int:shipper_id>', methods=['DELETE'])
+def delete_shipper_by_id(shipper_id):
+    c = bo.Shipper(shipper_id=shipper_id)
+    result = do.Shippers(ConnectionData).delete(c)
+    return jsonify({'message': result[0]}), result[1]
+
+# Supplier
+
+@app.route('/supplier/insert', methods=['POST'])
+def supplier_insert():
+    data = request.json
+    c1 = bo.Supplier(SupplierName=data['SupplierName'], ContactName=data['ContactName'], Address=data['Address'], City=data['City'], PostalCode=data['PostalCode'], Country=data['Country'], Phone=data['Phone'])
+    c2 = do.Supplier(ConnectionData)
+    s1 = c2.insert(c1)
+    result = {}
+    result['message'] = s1
+    return jsonify(result), 200
+
+@app.route('/supplier/all')
+def get_all_supplier():
+    result = do.Supplier(ConnectionData).get_all()
+    return jsonify(result), 200
+
+@app.route('/supplier/get/<int:supplier_id>')
+def get_supplier_by_id(supplier_id):
+    c = bo.Supplier(SupplierID=supplier_id)
+    result = do.Supplier(ConnectionData).get_by_id(c)
+    if result[1] != 200:
+        return jsonify({'message': result[0]}), result[1]
+    return jsonify(result[0].to_json()), 200
+
+@app.route('/supplier/update/<int:supplier_id>', methods=['PUT'])
+def update_supplier_by_id(supplier_id):
+    data = request.json
+    c = bo.Supplier(SupplierID=supplier_id, SupplierName=data['SupplierName'], ContactName=data['ContactName'], Address=data['Address'], City=data['City'], PostalCode=data['PostalCode'], Country=data['Country'], Phone=data['Phone'])
+    result = do.Supplier(ConnectionData).update(c)
+    return jsonify({'message': result[0]}), result[1]
+
+@app.route('/supplier/delete/<int:supplier_id>', methods=['DELETE'])
+def delete_supplier_by_id(supplier_id):
+    c = bo.Supplier(SupplierID=supplier_id)
+    result = do.Supplier(ConnectionData).delete(c)
+    return jsonify({'message': result[0]}), result[1]
 
 if __name__ == "__main__":
     app.debug = True
