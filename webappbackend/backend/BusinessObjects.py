@@ -140,7 +140,7 @@ class Shippers:
     def to_json(self):
         return{
             'ShipperID' : self.ShipperID,
-            'ShipperName' : self.ShipperName,
+            'ShipperID' : self.ShipperName,
             'Phone' : self.Phone
         }
 class Suppliers:

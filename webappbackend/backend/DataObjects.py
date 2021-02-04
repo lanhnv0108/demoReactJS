@@ -504,7 +504,7 @@ class Orders:
                                   database=self.ConnectionData['database'])
             cur = con.cursor()
             sql = "INSERT INTO Orders(CustomerID, EmployeeID, OrderDate, ShipperID) VALUES (%s, %s, %s, %s)"
-            record_to_insert = (oders.CustomerID ,oders.EmployeeID , oders.OrderDate, oders.ShipperID)
+            record_to_insert = (oders.CustomerID ,oders.EmployeeID , oders.         Date, oders.ShipperID)
             cur.execute(sql, record_to_insert)
             con.commit()
             con.close()
@@ -847,5 +847,124 @@ class Shippers:
         finally:
             if con is not None:
                 con.close() 
+class Suppliers:
+    def __init__(self, ConnectionData):
+        self.ConnectionData = ConnectionData
+    def insert(self, suppliers : SuppliersEntity):
+        con = None
+        try:
+            con = psycopg2.connect(user=self.ConnectionData['user'],
+                                  password=self.ConnectionData['password'],
+                                  host=self.ConnectionData['host'],
+                                  port=self.ConnectionData['port'],
+                                  database=self.ConnectionData['database'])
+            cur = con.cursor()
+            sql = "INSERT INTO Suppliers(SupplierName,ContactName,Address, City , PostalCode , Country ,  Phone ) VALUES (%s, %s,%s, %s,%s, %s,%s)"
+            record_to_insert = (suppliers.SupplierName, suppliers.ContactName , suppliers.Address , suppliers.City , suppliers.PostalCode , suppliers.Country , suppliers.Phone)
+            cur.execute(sql, record_to_insert)
+            con.commit()
+            con.close()
+            return 'Insert Shippers successfully'
+        except (Exception, psycopg2.DatabaseError) as error:
+            return str(error)
+        finally:
+            if con is not None:
+                con.close()
+    def get_all(self):
+        con = None
+        try:
+            con = psycopg2.connect(user=self.ConnectionData['user'],
+                                  password=self.ConnectionData['password'],
+                                  host=self.ConnectionData['host'],
+                                  port=self.ConnectionData['port'],
+                                  database=self.ConnectionData['database'])
+            cur = con.cursor()
+            sql = "SELECT * FROM Suppliers"
+            cur.execute(sql)
+            con.commit()
+            rows = cur.fetchall()
+            result = []
+            for row in rows:
+                c = SuppliersEntity()
+                c.fetch_data(row)
+                result.append(c.to_json())
+                con.close()
+            return result
+        except (Exception, psycopg2.DatabaseError) as error:
+            return str(error)
+        finally:
+            if con is not None:
+                con.close()    
+    def get_by_id(self , suppliers : SuppliersEntity):
+        con = None
+        try:
+            con = psycopg2.connect(user=self.ConnectionData['user'],
+                                  password=self.ConnectionData['password'],
+                                  host=self.ConnectionData['host'],
+                                  port=self.ConnectionData['port'],
+                                  database=self.ConnectionData['database'])
+            cur = con.cursor()
+            sql = "SELECT * FROM Suppliers WHERE SupplierID = %s"
+            cur.execute(sql, (suppliers.SupplierID, ))
+            con.commit() 
+            row = cur.fetchone()
+            if row:
+                c = ShippersEntity()
+                c.fetch_data(row)
+                return c , 200
+            con.close()
+            return 'Shipper' , 404
+            
+        except (Exception, psycopg2.DatabaseError) as error:
+            return str(error)
+        finally:
+            if con is not None:
+                con.close()   
+    def delete(self , suppliers : SuppliersEntity):
+        con = None
+        try:
+            con = psycopg2.connect(user=self.ConnectionData['user'],
+                                  password=self.ConnectionData['password'],
+                                  host=self.ConnectionData['host'],
+                                  port=self.ConnectionData['port'],
+                                  database=self.ConnectionData['database'])
+            cur = con.cursor()
+            sql = "DELETE FROM Suppliers WHERE SupplierID= %s"
+            cur.execute(sql, (suppliers.SupplierID ,))
+            con.commit()
+            row = cur.rowcount
+            if row > 0:
+                return 'Deleted SuppliersID' , 200
+            con.close()
+            return 'SuppliersID not found' ,200
+        except (Exception, psycopg2.DatabaseError) as error:
+            return str(error)
+        finally:
+            if con is not None:
+                con.close()
+
+    def update(self , suppliers : SuppliersEntity):
+        con = None
+        try:
+            con = psycopg2.connect(user=self.ConnectionData['user'],
+                                  password=self.ConnectionData['password'],
+                                  host=self.ConnectionData['host'],
+                                  port=self.ConnectionData['port'],
+                                  database=self.ConnectionData['database'])
+            cur = con.cursor()
+            sql = "UPDATE Suppliers SET SupplierName = %s,ContactName = %s ,Address= %s , City = %s , Country = %s , Phone = %s  WHERE SupplierId= %s"
+            cur.execute(sql, ( suppliers.SupplierName , suppliers.ContactName , suppliers.Address , suppliers.City , suppliers.Country , suppliers.Phone , suppliers.SupplierID))
+            con.commit()
+            row = cur.rowcount
+            if row > 0:
+                return 'SuppliersID update' , 200
+            con.close()
+            return 'SuppliersIDnot found' ,200
+        except (Exception, psycopg2.DatabaseError) as error:
+            return str(error)
+        finally:
+            if con is not None:
+                con.close() 
+
 if __name__ == "__main__":
     print('this is data object package')

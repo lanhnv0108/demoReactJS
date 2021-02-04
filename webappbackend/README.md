@@ -9,11 +9,11 @@ https://docs.docker.com/install/linux/docker-ce/ubuntu/
 #backend
 sudo docker build -t backend .
 sudo docker run -d --name backend --env db_ip=10.0.2.15 -p 8080:8080 backend 
-
+c
 sudo docker run -d --name backend --env db_ip=172.17.0.1 -p 8080:8080 backend 
 sudo docker stop backend
 sudo docker rm backend 
-sudo docker exec -it coredb bash
+
 
 #deploy db
 sudo docker load --input postgres_11.2-alpine.tar
